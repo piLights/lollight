@@ -18,7 +18,7 @@ var (
 )
 
 func send(c color) {
-	url := fmt.Sprintf("http://%s/do?action=set&r=%d&g=%d&b=%d", *flag_Host, c.R, c.G, c.B)
+	url := fmt.Sprintf("http://%s/rgb/%d/%d/%d", *flag_Host, c.R, c.G, c.B)
 	_, err := http.Get(url)
 
 	if err != nil {
