@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"image/color"
 	"log"
 	"time"
 
@@ -25,17 +24,13 @@ var (
 )
 
 func send(c rgbColor) {
-	colorSet := color.RGBA{c.R, c.G, c.B, 100}
+	colorMessage := &LighterGRPC.ColorMessage{true, int32(c.R), int32(c.G), int32(c.B), 100, "dioderLollight", ""}
 
-	success, error := colorSender.SetColor(context.Background(), colorSet)
+	success, error := colorSender.SetColor(context.Background(), colorMessage)
 	if error != nil {
 		log.Fatal(error)
 	} else {
 		log.Println(success)
-	}
-
-	if err != nil {
-		log.Fatal(err)
 	}
 }
 
@@ -82,7 +77,7 @@ func main() {
 	}
 
 	//Make the colorSender
-	connection, error := grpc.Dial(*hostName)
+	connection, error := grpc.Dial(*hostName, grpc.WithInsecure())
 	if error != nil {
 		log.Fatal(error)
 	}
@@ -90,7 +85,7 @@ func main() {
 
 	colorSender = LighterGRPC.NewLighterClient(connection)
 
-	input = make(chan color)
+	input = make(chan rgbColor)
 
 	go fader()
 
